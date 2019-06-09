@@ -5,16 +5,20 @@
 #include <string>
 #include <exception>
 
-class Reader
+class Reader final
 {
 public:
     Reader() = default;
-    void runForever();
+    void run() noexcept;
     boost::signals2::signal<void(const std::string &)> dataAppeared;
     boost::signals2::signal<void()> destroyed;
     std::exception_ptr lastException() const noexcept;
+    void interrupt() noexcept;
 private:
-    std::exception_ptr mLastException;
+    bool stdinHasAvailableData() const;
+private:
+    std::atomic_bool mIsInterrupted{false};
+    std::exception_ptr mLastException{nullptr};
 };
 
 #endif // READER_H

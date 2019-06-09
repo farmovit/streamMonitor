@@ -3,8 +3,6 @@ project(streamMonitor LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED on)
 
-#enable_testing()
-#find_package(GTest REQUIRED)
 find_package(Boost COMPONENTS signals REQUIRED)
 INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIRS})
 
@@ -24,6 +22,3 @@ file(GLOB SOURCES src/*.cpp)
 add_executable(${PROJECT_NAME} ${SOURCES})
 
 target_link_libraries(${PROJECT_NAME} -lpthread ${Boost_LIBRARIES})
-
-#target_link_libraries(baseTest GTest::GTest GTest::Main)
-#add_test(limitedBufferTests baseTest)
