@@ -5,6 +5,7 @@
 #include <csignal>
 #include "Buffer.h"
 #include "Reader.h"
+#include <unistd.h>
 
 using namespace std::literals;
 
@@ -65,6 +66,8 @@ void StreamMonitorApp::runWriter() noexcept {
             auto str = mBuffer.popFront(writeCharsNum);
             if (!str.empty()) {
                 std::cout << str << std::endl;
+            } else if (!isatty(fileno(stdin))) {
+                return;
             }
         } catch (std::exception &) {
             addException(std::current_exception());
