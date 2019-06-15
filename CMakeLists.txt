@@ -14,7 +14,9 @@ else()
     message("-- Configuring release build")
 endif()
 
-set(DESIRED_WARNINGS "-Wall -Wextra -Wconversion -Wunreachable-code -Wuninitialized -pedantic-errors -Wold-style-cast -Wno-error=unused-variable -Wshadow -Wfloat-equal -Weffc++")
+set(DESIRED_WARNINGS "-Wall -Wextra -Wconversion -Wunreachable-code -Wuninitialized -pedantic-errors -Wold-style-cast -Wno-error=unused-variable -Wshadow -Wfloat-equal")
+
+list(APPEND CMAKE_CXX_FLAGS "${OPTIMIZATION_FLAGS} ${DESIRED_WARNINGS}")
 
 include_directories("${PROJECT_SOURCE_DIR}/src")
 
