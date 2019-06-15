@@ -60,14 +60,17 @@ int StreamMonitorApp::exec() noexcept {
 }
 
 void StreamMonitorApp::runWriter() noexcept {
+    bool hasOutput = false;
     while (!isInterrupted) {
         std::this_thread::sleep_for(writeTimeout);
         try {
             auto str = mBuffer.popFront(writeCharsNum);
             if (!str.empty()) {
-                std::cout << str << std::endl;
+                std::cout << str;
+                std::cout.flush();
+                hasOutput = true;
             } else if (!isatty(fileno(stdin))) {
-                return;
+                break;
             }
         } catch (std::exception &) {
             addException(std::current_exception());
@@ -75,7 +78,11 @@ void StreamMonitorApp::runWriter() noexcept {
     }
     auto str = mBuffer.readAll();
     if (!str.empty()) {
-        std::cout << str << std::endl;
+        hasOutput = true;
+        std::cout << str;
+    }
+    if (hasOutput) {
+        std::cout << std::endl;
     }
 }
 
