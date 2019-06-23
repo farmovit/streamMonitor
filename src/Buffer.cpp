@@ -15,8 +15,9 @@ std::string Buffer::popFront(int num) {
 
 void Buffer::appendBack(const std::string &str, char delimiter) {
     std::lock_guard lock(mReadWriteLock);
-    if (mBuffer.empty()) {
+    if (!mHadData) {
         mBuffer.append(str);
+        mHadData = true;
     } else {
         mBuffer.append(delimiter + str);
     }
@@ -25,4 +26,9 @@ void Buffer::appendBack(const std::string &str, char delimiter) {
 std::string Buffer::readAll() noexcept {
     std::lock_guard lock(mReadWriteLock);
     return std::move(mBuffer);
+}
+
+bool Buffer::hadData() const noexcept {
+    std::lock_guard lock(mReadWriteLock);
+    return mHadData;
 }

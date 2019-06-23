@@ -9,7 +9,7 @@ void Reader::run() noexcept {
                 continue;
             }
             std::string str;
-            if (std::getline(std::cin, str) && !str.empty()) {
+            if (std::getline(std::cin, str)) {
                 dataAppeared(str);
             }
         }
