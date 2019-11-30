@@ -8,17 +8,27 @@ std::string Buffer::popFront(int num) {
     if (mBuffer.size() <= static_cast<std::size_t>(num)) {
         return std::move(mBuffer);
     }
-    auto result = mBuffer.substr(0, static_cast<std::size_t>(num - 1));
-    mBuffer.erase(0, static_cast<std::size_t>(num - 1));
+    auto result = mBuffer.substr(0, static_cast<std::size_t>(num));
+    mBuffer.erase(0, static_cast<std::size_t>(num));
     return result;
 }
 
 void Buffer::appendBack(const std::string &str, char delimiter) {
     std::lock_guard lock(mReadWriteLock);
-    mBuffer.append(str + delimiter);
+    if (!mHadData) {
+        mBuffer.append(str);
+        mHadData = true;
+    } else {
+        mBuffer.append(delimiter + str);
+    }
 }
 
 std::string Buffer::readAll() noexcept {
     std::lock_guard lock(mReadWriteLock);
     return std::move(mBuffer);
+}
+
+bool Buffer::hadData() const noexcept {
+    std::lock_guard lock(mReadWriteLock);
+    return mHadData;
 }

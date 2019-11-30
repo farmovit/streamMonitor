@@ -1,7 +1,6 @@
 #include "Reader.h"
 #include <iostream>
 #include <sys/select.h>
-#include <unistd.h>
 
 void Reader::run() noexcept {
     try {
@@ -10,13 +9,9 @@ void Reader::run() noexcept {
                 continue;
             }
             std::string str;
-            if (!std::getline(std::cin, str) || str.empty()) {
-                if (!isatty(fileno(stdin))) {
-                    return;
-                }
-                break;
+            if (std::getline(std::cin, str)) {
+                dataAppeared(str);
             }
-            dataAppeared(str);
         }
     } catch (std::exception &) {
         mLastException = std::current_exception();

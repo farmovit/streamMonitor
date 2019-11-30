@@ -5,6 +5,7 @@
 #include <csignal>
 #include "Buffer.h"
 #include "Reader.h"
+#include <unistd.h>
 
 using namespace std::literals;
 
@@ -41,6 +42,9 @@ int StreamMonitorApp::exec() noexcept {
     } catch (const std::exception&) {
         addException(std::current_exception());
     }
+    if (mBuffer.hadData()) {
+        std::cout << std::endl;
+    }
     if (auto exception = mReader.lastException();
             exception != nullptr) {
         addException(exception);
@@ -64,7 +68,9 @@ void StreamMonitorApp::runWriter() noexcept {
         try {
             auto str = mBuffer.popFront(writeCharsNum);
             if (!str.empty()) {
-                std::cout << str << std::endl;
+                std::cout << str << std::flush;
+            } else if (!isatty(fileno(stdin))) {
+                break;
             }
         } catch (std::exception &) {
             addException(std::current_exception());
@@ -72,7 +78,7 @@ void StreamMonitorApp::runWriter() noexcept {
     }
     auto str = mBuffer.readAll();
     if (!str.empty()) {
-        std::cout << str << std::endl;
+        std::cout << str << std::flush;
     }
 }
 
